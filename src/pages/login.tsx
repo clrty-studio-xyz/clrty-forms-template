@@ -1,13 +1,13 @@
 // login page
 import type { NextPage } from "next";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, getSession } from "next-auth/react";
 import Head from "next/head";
 import LoginForm from "../components/Auth/LoginForm";
 import { trpc } from "../utils/trpc";
 
 const Login: NextPage = () => {
   const { data: session } = useSession();
-  console.log({ session })
+  console.log({ session });
   return (
     <>
       <Head>
@@ -16,13 +16,26 @@ const Login: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {session ? (
-        <button onClick={() => signOut()}>signOut</button>
-      ) : (
-        <LoginForm />
-      )}
+      <LoginForm />
     </>
   );
 };
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
 
 export default Login;
