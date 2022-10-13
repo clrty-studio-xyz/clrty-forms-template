@@ -25,10 +25,12 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { HomeModernIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 
 const navigation = [
-  { name: "Forms", href: "#", icon: FolderIcon, current: true },
+  { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
+  { name: "Forms", href: "/forms", icon: FolderIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -108,27 +110,28 @@ export default function Main({ children }: { children: any }) {
                   <div className="mt-5 h-0 flex-1 overflow-y-auto">
                     <nav className="space-y-1 px-2">
                       {navigation.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                            "group flex items-center rounded-md px-2 py-2 text-base font-medium"
-                          )}
-                        >
-                          <item.icon
+                        <Link href={item.href}>
+                          <a
+                            key={item.name}
                             className={classNames(
                               item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
-                              "mr-4 h-6 w-6 flex-shrink-0"
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                              "group flex items-center rounded-md px-2 py-2 text-base font-medium"
                             )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
+                          >
+                            <item.icon
+                              className={classNames(
+                                item.current
+                                  ? "text-gray-500"
+                                  : "text-gray-400 group-hover:text-gray-500",
+                                "mr-4 h-6 w-6 flex-shrink-0"
+                              )}
+                              aria-hidden="true"
+                            />
+                            {item.name}
+                          </a>
+                        </Link>
                       ))}
                     </nav>
                   </div>
