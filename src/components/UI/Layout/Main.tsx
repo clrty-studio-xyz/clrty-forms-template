@@ -1,3 +1,17 @@
+/*
+  This example requires some changes to your config:
+  
+  ```
+  // tailwind.config.js
+  module.exports = {
+    // ...
+    plugins: [
+      // ...
+      require('@tailwindcss/forms'),
+    ],
+  }
+  ```
+*/
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -12,41 +26,26 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Forms", href: "#", icon: FolderIcon, current: true },
 ];
-
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
+  { name: "Sign out", href: "#" },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Main({
-  title,
-  children,
-}: {
-  title: string;
-  children: any;
-}) {
+export default function Main({ children }: { children: any }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full">
-        ```
-      */}
-      <div>
+      <div className="flex h-full">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -75,7 +74,7 @@ export default function Main({
                 leaveFrom="translate-x-0"
                 leaveTo="-translate-x-full"
               >
-                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-gray-800 pt-5 pb-4">
+                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-white pt-5 pb-4">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-in-out duration-300"
@@ -102,7 +101,7 @@ export default function Main({
                   <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                       alt="Your Company"
                     />
                   </div>
@@ -114,16 +113,16 @@ export default function Main({
                           href={item.href}
                           className={classNames(
                             item.current
-                              ? "bg-gray-900 text-white"
-                              : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                              ? "bg-gray-100 text-gray-900"
+                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                             "group flex items-center rounded-md px-2 py-2 text-base font-medium"
                           )}
                         >
                           <item.icon
                             className={classNames(
                               item.current
-                                ? "text-gray-300"
-                                : "text-gray-400 group-hover:text-gray-300",
+                                ? "text-gray-500"
+                                : "text-gray-400 group-hover:text-gray-500",
                               "mr-4 h-6 w-6 flex-shrink-0"
                             )}
                             aria-hidden="true"
@@ -145,32 +144,32 @@ export default function Main({
         {/* Static sidebar for desktop */}
         <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex min-h-0 flex-1 flex-col bg-gray-800">
-            <div className="flex h-16 flex-shrink-0 items-center bg-gray-900 px-4">
+          <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-white pt-5">
+            <div className="flex flex-shrink-0 items-center px-4">
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                 alt="Your Company"
               />
             </div>
-            <div className="flex flex-1 flex-col overflow-y-auto">
-              <nav className="flex-1 space-y-1 px-2 py-4">
+            <div className="mt-5 flex flex-grow flex-col">
+              <nav className="flex-1 space-y-1 px-2 pb-4">
                 {navigation.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
                     className={classNames(
                       item.current
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        ? "bg-gray-100 text-gray-900"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                       "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                     )}
                   >
                     <item.icon
                       className={classNames(
                         item.current
-                          ? "text-gray-300"
-                          : "text-gray-400 group-hover:text-gray-300",
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
                         "mr-3 h-6 w-6 flex-shrink-0"
                       )}
                       aria-hidden="true"
@@ -182,7 +181,7 @@ export default function Main({
             </div>
           </div>
         </div>
-        <div className="flex flex-col md:pl-64">
+        <div className="flex flex-1 flex-col md:pl-64">
           <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
             <button
               type="button"
@@ -261,17 +260,6 @@ export default function Main({
                           )}
                         </Menu.Item>
                       ))}
-
-                      <a
-                        onClick={() =>
-                          signOut({
-                            callbackUrl: "http://localhost:3000/login",
-                          })
-                        }
-                        className={"block px-4 py-2 text-sm text-gray-700"}
-                      >
-                        Sign Out
-                      </a>
                     </Menu.Items>
                   </Transition>
                 </Menu>
@@ -279,24 +267,7 @@ export default function Main({
             </div>
           </div>
 
-          <main className="flex-1">
-            <div className="py-6">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  {title}
-                </h1>
-              </div>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-                {/* Replace with your content */}
-                <div className="py-4">
-                  <div className="h-96 rounded-lg border-4 border-dashed border-gray-200">
-                    {children}{" "}
-                  </div>
-                </div>
-                {/* /End replace */}
-              </div>
-            </div>
-          </main>
+          {children}
         </div>
       </div>
     </>
