@@ -1,32 +1,15 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3BottomLeftIcon,
   BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
   FolderIcon,
   HomeIcon,
-  InboxIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { HomeModernIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon, current: true },
@@ -35,7 +18,6 @@ const navigation = [
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
 ];
 
 function classNames(...classes) {
@@ -43,6 +25,8 @@ function classNames(...classes) {
 }
 
 export default function Main({ children }: { children: any }) {
+  const { data: session } = useSession();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -233,7 +217,11 @@ export default function Main({ children }: { children: any }) {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={
+                          session != null && session.user != null
+                            ? session.user?.image
+                            : null
+                        }
                         alt=""
                       />
                     </Menu.Button>
@@ -263,6 +251,16 @@ export default function Main({ children }: { children: any }) {
                           )}
                         </Menu.Item>
                       ))}
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            onClick={() => signOut()}
+                            className={"block px-4 py-2 text-sm text-gray-700"}
+                          >
+                            Sign out
+                          </a>
+                        )}
+                      </Menu.Item>
                     </Menu.Items>
                   </Transition>
                 </Menu>
